@@ -7,11 +7,12 @@ In this project, you will implement the Go-back-N automatic repeat request (ARQ)
 of experiments to evaluate its performance. In the process I expect that you will develop a good understanding of
 ARQ schemes and reliable data transfer protocols and build a number of fundamental skills related to writing
 transport layer services, including:
-*encapsulating application data into transport layer segments by including transport headers,
-*buffering and managing data received from, or to be delivered to, the application,
-*managing the window size at the sender,
-*computing checksums, and
-*using the UDP socket interface.
+
+* encapsulating application data into transport layer segments by including transport headers,
+* buffering and managing data received from, or to be delivered to, the application,
+* managing the window size at the sender,
+* computing checksums, and
+* using the UDP socket interface.
 
 Simple File Transfer Protocol (Simple-FTP)
 The FTP protocol provides a sophisticated file transfer service, but uses TCP to ensure reliable data transmission.
@@ -40,9 +41,11 @@ protocol. Specifically, if less than N segments are outstanding (i.e., have not 
 formed segment to the server in a UDP packet. Otherwise, it buffers the segment and waits until the window has
 advanced to transmit it. Note that if N = 1, the protocol reduces to Stop-and-Wait.
 The header of the segment contains three fields:
-*a 32-bit sequence number,
-*a 16-bit checksum of the data part, computed in the same way as the UDP checksum, and
-*a 16-bit field that has the value 0101010101010101, indicating that this is a data packet.
+
+* a 32-bit sequence number,
+* a 16-bit checksum of the data part, computed in the same way as the UDP checksum, and
+* a 16-bit field that has the value 0101010101010101, indicating that this is a data packet.
+
 For this project, you may have the sequence numbers start at 0.
 The client implements the full Go-back-N protocol as described in the book, including setting the timeout counter,
 processing ACK packets (discussed shortly), advancing the window, and retransmitting packets as necessary 
@@ -54,9 +57,11 @@ is in-sequence, and if so, it sends an ACK segment (using UDP) to the client; it
 file whose name is provided in the command line. If the packet received is out-of-sequence, or the checksum is
 incorrect, it does nothing.
 The ACK segment consists of three fields and no data:
-*the 32-bit sequence number that is being ACKed,
-*a 16-bit field that is all zeroes, and
-*a 16-bit field that has the value 1010101010101010, indicating that this is an ACK packet.
+
+* the 32-bit sequence number that is being ACKed,
+* a 16-bit field that is all zeroes, and
+* a 16-bit field that has the value 1010101010101010, indicating that this is an ACK packet.
+
 ####Generating Errors
 Despite the fact that UDP is unreliable, the Internet does not in general lose packets. Therefore, we need a
 systematic way of generating lost packet so as to test that the Go-back-N protocol works correctly (and to obtain
@@ -86,10 +91,12 @@ segment size.
 
 ###Output
 The code you submit must print the following to the standard output:
-*Simple-FTP server: whenever a packet with sequence number X is discarded by the probabilistic loss
+
+* Simple-FTP server: whenever a packet with sequence number X is discarded by the probabilistic loss
 service, the server should print the following line:
 Packet loss, sequence number = X
-*Simple-FTP client: whenever a timeout occurs for a packet with sequence number Y , the client should
+
+* Simple-FTP client: whenever a timeout occurs for a packet with sequence number Y , the client should
 print the following line:
 Timeout, sequence number = Y 
 
