@@ -122,7 +122,8 @@ same file, and loss probability was changed from p = 0.01 to p = 0.10 in increme
 
 Source files are availabe in src folder which can be compiled by running javac. Output classes should be placed under bin directory. Alternatively, Compile.sh can be run to compile the files.
 
-./Compile.sh before running any of the shell files, use "chmod 744 *.sh" to make these files executable
+./Compile.sh 
+before running any of the shell files, use "chmod 744 *.sh" to make these files executable
 
 ####Executing
 
