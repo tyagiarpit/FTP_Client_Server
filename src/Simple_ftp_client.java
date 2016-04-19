@@ -172,6 +172,7 @@ public class Simple_ftp_client {
 						clientSocket.receive(receivePacket);
 					}
 					catch(SocketTimeoutException e){
+						System.out.println("Timeout, Sequence number="+buffer.element().getIndex());
 						if(showResent)
 							System.out.println("Packet lost");
 						break;
