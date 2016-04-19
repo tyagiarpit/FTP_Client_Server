@@ -26,6 +26,7 @@ public class Simple_ftp_client {
 			System.out.println(USAGE);
 			System.exit(1);
 		}
+		
 		/*
 		String hostname = "localhost";
 		int port = 7783;

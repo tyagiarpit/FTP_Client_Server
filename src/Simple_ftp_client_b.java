@@ -16,7 +16,7 @@ import utils.UDPHeader;
 import utils.UDPPacket;
 import utils.Utils;
 
-public class Simple_ftp_client_sr {
+public class Simple_ftp_client_b {
 	
 	private final static String USAGE = "USAGE: Simple_ftp_client server-host-name server-port# file-name N MSS";
 	private final static int TIMEOUT = 200;
