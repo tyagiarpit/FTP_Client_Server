@@ -111,7 +111,7 @@ public class Simple_ftp_server {
 					if(VERBOSE)
 						System.out.println("Packet dropped(Out of seq), Sequence number="+seq);
 				}
-				ack = expSeqNo;
+				ack = expSeqNo-1;
 				UDPHeader ackHeader = new UDPHeader(ack, 0, UDPHeader.HeaderType.ACK);
 				
 				DatagramPacket ackPacket = new DatagramPacket(ackHeader.getHeaderData(), ackHeader.getHeaderData().length, receivePacket.getAddress(),receivePacket.getPort());

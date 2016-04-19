@@ -191,7 +191,7 @@ public class Simple_ftp_client {
 //						}
 //					}
 					
-					while(buffer.size()>0&&buffer.element().getIndex() < ack.getSequence()){
+					while(buffer.size()>0&&buffer.element().getIndex() <= ack.getSequence()){
 						buffer.remove().setAcknowledged(true);
 						if(showProgress)
 						{	
