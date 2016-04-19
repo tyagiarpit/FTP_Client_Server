@@ -36,8 +36,8 @@ public class Simple_ftp_client {
 		*/
 		
 		int mode = 1; //0- Normal, 1-Go back N, 2-Selective Repeat
-		boolean showResent = true;
-		boolean showProgress = false;
+		boolean showResent = false;
+		boolean showProgress = true;
 		
 		if(showProgress)
 			showResent = false;

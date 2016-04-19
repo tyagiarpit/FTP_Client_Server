@@ -1,9 +1,12 @@
 #!/bin/bash
-
-FILE=source.pdf
-HOSTNAME=localhost
-PORT=7783
-
+if [ "$3" = "" ]; then
+	echo "./Client_Multiple_SelRep.sh <FILE_NAME> <HOST_NAME> <PORT>"
+	exit
+fi
+FILE=$1
+HOSTNAME=$2
+PORT=$3
+JAVA_CLASS=Simple_ftp_client_b
 # Check for N
 rm Results.txt
 
@@ -16,7 +19,7 @@ do
 	do
 	N=`echo "2^$i"|bc`
 	echo "p=$p, N=$N, MSS=$MSS" >> Results.txt
-	java -cp bin Simple_ftp_client_sr $HOSTNAME $PORT $FILE $N $MSS >> Results.txt
+	java -cp bin $JAVA_CLASS $HOSTNAME $PORT $FILE $N $MSS >> Results.txt
 	done;
 
 	# Check for MSS 
@@ -25,7 +28,7 @@ do
 	do
 	MSS=`echo "100*$i"|bc`
 	echo "p=$p, N=$N, MSS=$MSS" >> Results.txt
-	java -cp bin Simple_ftp_client_sr $HOSTNAME $PORT $FILE $N $MSS >> Results.txt
+	java -cp bin $JAVA_CLASS $HOSTNAME $PORT $FILE $N $MSS >> Results.txt
 	done;
 
 
@@ -35,7 +38,7 @@ do
 	do
 	p=`echo "0.01*$i"|bc`
 	echo "p=$p, N=$N, MSS=$MSS" >> Results.txt
-	java -cp bin Simple_ftp_client_sr $HOSTNAME $PORT $FILE $N $MSS >> Results.txt
+	java -cp bin $JAVA_CLASS $HOSTNAME $PORT $FILE $N $MSS >> Results.txt
 	done;
 done;
 
