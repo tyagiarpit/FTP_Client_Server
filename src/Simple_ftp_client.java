@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.SocketTimeoutException;
 import java.util.Iterator;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -18,8 +19,8 @@ import utils.Utils;
 
 public class Simple_ftp_client {
 	
-	private final static String USAGE = "USAGE: Simple_ftp_client server-host-name server-port# file-name N MSS";
-	private final static int TIMEOUT = 200;
+	private final static String USAGE = "USAGE: Simple_ftp_client server-host-name server-port# file-name N MSS [SR]";
+	private final static int TIMEOUT = 50;
 	public static void main(String[] args) throws IOException {
 		if(args.length<5)
 		{
@@ -29,13 +30,19 @@ public class Simple_ftp_client {
 		
 		/*
 		String hostname = "localhost";
-		int port = 7783;
+		int port = port;
 		String filename = "/Users/Xeon/Desktop/ss1.png";
 		int N = 5;
 		int MSS = 5000;
 		*/
 		
 		int mode = 1; //0- Normal, 1-Go back N, 2-Selective Repeat
+		
+		if(args.length>5){
+			if(args[5].equalsIgnoreCase("SR"))
+				mode=2;
+		}
+		
 		boolean showResent = false;
 		boolean showProgress = true;
 		
@@ -73,7 +80,10 @@ public class Simple_ftp_client {
 			ProgressBar.init(fileSegments.getSegments().length);
 		}
 		
-		DatagramSocket clientSocket = new DatagramSocket();
+		int client_port = (int) (50000+Math.random()*5000);
+		DatagramSocket clientSocket = new DatagramSocket(null);
+		clientSocket.bind(new InetSocketAddress(InetAddress.getByName(InetAddress.getLocalHost().getHostName()),client_port));
+		
 		long start = System.nanoTime();
 		
 		if(mode==0){
@@ -85,11 +95,8 @@ public class Simple_ftp_client {
 				
 				UDPHeader header = new UDPHeader(i,Utils.checksum(b),UDPHeader.HeaderType.DATA);
 				UDPPacket packet = new UDPPacket(header,b);
-				DatagramPacket p = new DatagramPacket(packet.getBytes(), packet.getBytes().length, InetAddress.getByName("127.0.0.1"), 7783);
-				if(showProgress)
-				{	
-					ProgressBar.tick(i);
-				}
+				DatagramPacket p = new DatagramPacket(packet.getBytes(), packet.getBytes().length, InetAddress.getByName(hostname), port);
+				
 				clientSocket.send(p);
 				
 				byte[] buffer = new byte[2048]; 
@@ -97,6 +104,10 @@ public class Simple_ftp_client {
 				
 				try{
 					clientSocket.receive(receivePacket);
+					if(showProgress)
+					{	
+						ProgressBar.tick();
+					}
 				}
 				catch(SocketTimeoutException e){
 					if(showResent)
@@ -128,7 +139,7 @@ public class Simple_ftp_client {
 						
 						UDPHeader header = new UDPHeader(segment.getIndex(),Utils.checksum(b),UDPHeader.HeaderType.DATA);
 						UDPPacket packet = new UDPPacket(header,b);
-						DatagramPacket p = new DatagramPacket(packet.getBytes(), packet.getBytes().length, InetAddress.getByName("127.0.0.1"), 7783);
+						DatagramPacket p = new DatagramPacket(packet.getBytes(), packet.getBytes().length, InetAddress.getByName(hostname), port);
 						clientSocket.send(p);
 					}
 				}
@@ -139,17 +150,14 @@ public class Simple_ftp_client {
 					if(i>=fileSegments.getSegments().length)
 						break;
 					Segment segment = fileSegments.getSegments()[i++];
-					if(showProgress)
-					{	
-						ProgressBar.tick(i);
-					}
+					
 					buffer.add(segment);
 					
 					byte b[] = segment.getData();
 					
 					UDPHeader header = new UDPHeader(segment.getIndex(),Utils.checksum(b),UDPHeader.HeaderType.DATA);
 					UDPPacket packet = new UDPPacket(header,b);
-					DatagramPacket p = new DatagramPacket(packet.getBytes(), packet.getBytes().length, InetAddress.getByName("127.0.0.1"), 7783);
+					DatagramPacket p = new DatagramPacket(packet.getBytes(), packet.getBytes().length, InetAddress.getByName(hostname), port);
 					clientSocket.send(p);
 				}
 				
@@ -173,32 +181,33 @@ public class Simple_ftp_client {
 					System.arraycopy(receivePacket.getData(), 0, receivedData, 0, receivedData.length);
 					UDPHeader ack = new UDPHeader(receivedData);
 					
-					for (Iterator<Segment> iterator = buffer.iterator(); iterator.hasNext();) {
-						Segment segment = (Segment) iterator.next();
-						if(segment.getIndex()==ack.getSequence())
-						{
-							segment.setAcknowledged(true);
-							break;
-						}
-					}
+//					for (Iterator<Segment> iterator = buffer.iterator(); iterator.hasNext();) {
+//						Segment segment = (Segment) iterator.next();
+//						if(segment.getIndex()==ack.getSequence())
+//						{
+//							segment.setAcknowledged(true);
+//							break;
+//						}
+//					}
 					
-					while(buffer.size()>0&&buffer.element().isAcknowledged()){
-						buffer.remove();
+					while(buffer.size()>0&&buffer.element().getIndex() < ack.getSequence()){
+						buffer.remove().setAcknowledged(true);
+						if(showProgress)
+						{	
+							ProgressBar.tick();
+						}
 						//Add one more
 						if(i>=fileSegments.getSegments().length)
 							continue;
 						Segment segment = fileSegments.getSegments()[i++];
-						if(showProgress)
-						{	
-							ProgressBar.tick(i);
-						}
+						
 						buffer.add(segment);
 						
 						byte b[] = segment.getData();
 						
 						UDPHeader header = new UDPHeader(segment.getIndex(),Utils.checksum(b),UDPHeader.HeaderType.DATA);
 						UDPPacket packet = new UDPPacket(header,b);
-						DatagramPacket p = new DatagramPacket(packet.getBytes(), packet.getBytes().length, InetAddress.getByName("127.0.0.1"), 7783);
+						DatagramPacket p = new DatagramPacket(packet.getBytes(), packet.getBytes().length, InetAddress.getByName(hostname), port);
 						clientSocket.send(p);
 					}
 					
@@ -223,7 +232,7 @@ public class Simple_ftp_client {
 							System.out.println("Packet resent, Sequence number="+segment.getIndex());
 						UDPHeader header = new UDPHeader(segment.getIndex(),Utils.checksum(b),UDPHeader.HeaderType.DATA);
 						UDPPacket packet = new UDPPacket(header,b);
-						DatagramPacket p = new DatagramPacket(packet.getBytes(), packet.getBytes().length, InetAddress.getByName("127.0.0.1"), 7783);
+						DatagramPacket p = new DatagramPacket(packet.getBytes(), packet.getBytes().length, InetAddress.getByName(hostname), port);
 						clientSocket.send(p);
 					}
 				}
@@ -234,17 +243,14 @@ public class Simple_ftp_client {
 					if(i>=fileSegments.getSegments().length)
 						break;
 					Segment segment = fileSegments.getSegments()[i++];
-					if(showProgress)
-					{	
-						ProgressBar.tick(i);
-					}
+					
 					buffer.add(segment);
 					
 					byte b[] = segment.getData();
 					
 					UDPHeader header = new UDPHeader(segment.getIndex(),Utils.checksum(b),UDPHeader.HeaderType.DATA);
 					UDPPacket packet = new UDPPacket(header,b);
-					DatagramPacket p = new DatagramPacket(packet.getBytes(), packet.getBytes().length, InetAddress.getByName("127.0.0.1"), 7783);
+					DatagramPacket p = new DatagramPacket(packet.getBytes(), packet.getBytes().length, InetAddress.getByName(hostname), port);
 					clientSocket.send(p);
 				}
 				
@@ -274,21 +280,22 @@ public class Simple_ftp_client {
 						{
 							_segment.setAcknowledged(true);
 							buffer.remove(_segment);
+							if(showProgress)
+							{	
+								ProgressBar.tick();
+							}
 							//Add one more
 							if(i>=fileSegments.getSegments().length)
 								break;
 							Segment segment = fileSegments.getSegments()[i++];
-							if(showProgress)
-							{	
-								ProgressBar.tick(i);
-							}
+							
 							buffer.add(segment);
 							
 							byte b[] = segment.getData();
 							
 							UDPHeader header = new UDPHeader(segment.getIndex(),Utils.checksum(b),UDPHeader.HeaderType.DATA);
 							UDPPacket packet = new UDPPacket(header,b);
-							DatagramPacket p = new DatagramPacket(packet.getBytes(), packet.getBytes().length, InetAddress.getByName("127.0.0.1"), 7783);
+							DatagramPacket p = new DatagramPacket(packet.getBytes(), packet.getBytes().length, InetAddress.getByName(hostname), port);
 							clientSocket.send(p);
 
 							break;

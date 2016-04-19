@@ -9,6 +9,8 @@ public class ProgressBar {
 	private static double pos = 0;
 	private static int bar = 0;
 	private static double _total = 0;
+	private static long _current = 0;
+	
 	public static void init(int total){
 		_total = total;
 		if(!ENABLED)
@@ -19,14 +21,17 @@ public class ProgressBar {
 		for(int i=0;i<bar;i++)
 			System.out.print(INCOMPLETE);//1
 		System.out.print("]");//1
-		System.out.printf(" %3d",1);//4
+		System.out.printf(" %3d",pct);//4
 		System.out.print("% ");
 	}
 	
-	public static void tick(int _current){
+	public static void tick(){
+		_current++;
 		double tempPct = Math.ceil(((double)_current*100)/_total);
 		if(tempPct>pct)
 			pct = (int) tempPct;
+		else
+			return;
 		pos = Math.ceil(((double)bar)*((double)pct)/100);
 		for(int i = 0;i<CONSOLE_WIDTH;i++ )
 			System.out.print("\b");
@@ -55,7 +60,8 @@ public class ProgressBar {
 	}
 	
 	public static void finish(){
-		tick((int) _total);
+		_current=(long) _total-1;
+		tick();
 	}
 	
 }
