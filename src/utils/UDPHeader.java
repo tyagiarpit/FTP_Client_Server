@@ -1,9 +1,9 @@
-package ftp.common.utils;
+package utils;
 
 import java.util.Arrays;
 
 public class UDPHeader {
-	public enum HeaderType {DATA,ACK};
+	public enum HeaderType {DATA,ACK,FIN};
 	private byte[] headerData = new byte[8];
 	private int sequence;
 	private short checksum;
@@ -19,6 +19,8 @@ public class UDPHeader {
 			headerData[7] = headerData[6] = (byte)(170 & 0xFF);
 		else if(this.type == HeaderType.DATA)
 			headerData[7] = headerData[6] = (byte)(85 & 0xFF);
+		else if(this.type == HeaderType.FIN)
+			headerData[7] = headerData[6] = (byte)(0 & 0xFF);
 			
 	}
 	
@@ -30,6 +32,8 @@ public class UDPHeader {
 			this.type = HeaderType.ACK;
 		else if(bytes[6]==(byte)85 && bytes[7]==(byte)85)
 			this.type = HeaderType.DATA;
+		else if(bytes[6]==(byte)0 && bytes[7]==(byte)0)
+			this.type = HeaderType.FIN;
 	}
 	
 	public byte[] getHeaderData() {

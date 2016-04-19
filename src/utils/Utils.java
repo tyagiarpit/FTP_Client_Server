@@ -1,4 +1,4 @@
-package ftp.common.utils;
+package utils;
 
 import java.io.File;
 import java.io.FileOutputStream;

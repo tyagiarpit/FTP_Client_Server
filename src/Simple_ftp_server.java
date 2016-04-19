@@ -1,4 +1,4 @@
-package ftp.server.common;
+
 
 import java.io.File;
 import java.io.IOException;
@@ -7,11 +7,11 @@ import java.net.DatagramSocket;
 import java.util.ArrayList;
 import java.util.Random;
 
-import ftp.common.utils.FileSegments;
-import ftp.common.utils.Segment;
-import ftp.common.utils.UDPHeader;
-import ftp.common.utils.UDPPacket;
-import ftp.common.utils.Utils;
+import utils.FileSegments;
+import utils.Segment;
+import utils.UDPHeader;
+import utils.UDPPacket;
+import utils.Utils;
 
 public class Simple_ftp_server {
 
@@ -24,19 +24,22 @@ public class Simple_ftp_server {
 		if(args.length<3)
 		{
 			System.out.println(USAGE);
-			//System.exit(1);
+			System.exit(1);
 		}
 		
-		//int port = Integer.parseInt(args[0]);
+		/*
 		int port = 7783;
-		
-		//String fileName = args[1];
 		String fileName = "/Users/Xeon/Desktop/ss_bhargav.png";
-		
-		//double p = Double.parseDouble(args[2]);
-		
-		
 		double p = 0.2;
+		*/
+		
+		int port = Integer.parseInt(args[0]);
+		
+		String fileName = args[1];
+		
+		double p = Double.parseDouble(args[2]);
+		
+		
 		
 		serverSocket = new DatagramSocket(port);
 
@@ -58,7 +61,7 @@ public class Simple_ftp_server {
 			UDPPacket packet = new UDPPacket(receivedData);
 			
 			/*You can do better*/
-			if(packet.getHeader().getType()!=UDPHeader.HeaderType.DATA)
+			if(packet.getHeader().getType()==UDPHeader.HeaderType.FIN)
 				break;
 			
 			int seq = packet.getHeader().getSequence();
@@ -80,7 +83,7 @@ public class Simple_ftp_server {
 				continue;
 			}
 			
-			System.out.println("Packet received, Sequence number="+seq);
+			//System.out.println("Packet received, Sequence number="+seq);
 			
 			//Add segment to file segments
 			segmentsList.add(new Segment(packet.getData(), seq));

@@ -1,4 +1,4 @@
-package ftp.common.utils;
+package utils;
 
 public class Segment {
 	private byte[] data;

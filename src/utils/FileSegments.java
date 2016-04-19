@@ -1,4 +1,4 @@
-package ftp.common.utils;
+package utils;
 
 import java.util.Iterator;
 import java.util.List;
