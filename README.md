@@ -125,9 +125,9 @@ To Run Server(receiver), run following shell script
 
 To start a client(sender) with Go Back N, run following command
 
-./Client_GoBackN.sh &lt;server-host-name&gt; &lt;server-port#&gt; &lt;file-name&gt; &lt;N&gt; &lt;MSS&gt;
+./Client.sh &lt;server-host-name&gt; &lt;server-port#&gt; &lt;file-name&gt; &lt;N&gt; &lt;MSS&gt;
 
 
 To start a client(sender) with Selective Repeat, run following command
 
-./Client_SelRep.sh &lt;server-host-name&gt; &lt;server-port#&gt; &lt;file-name&gt; &lt;N&gt; &lt;MSS&gt;
+./Client.sh &lt;server-host-name&gt; &lt;server-port#&gt; &lt;file-name&gt; &lt;N&gt; &lt;MSS&gt;<b>SR</b>
