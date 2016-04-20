@@ -139,4 +139,4 @@ To start a client(sender) with Go Back N, run following command
 
 To start a client(sender) with Selective Repeat, run following command
 
-./Client.sh &lt;server-host-name&gt; &lt;server-port#&gt; &lt;file-name&gt; &lt;N&gt; &lt;MSS&gt;<b>SR</b>
+./Client.sh &lt;server-host-name&gt; &lt;server-port#&gt; &lt;file-name&gt; &lt;N&gt; &lt;MSS&gt; <b>SR</b>
