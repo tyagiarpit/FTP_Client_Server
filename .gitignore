@@ -4,3 +4,5 @@ Times.txt
 .classpath
 ~$Results.xlsx
 .settings
+bin
+

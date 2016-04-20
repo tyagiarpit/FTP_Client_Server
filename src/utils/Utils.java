@@ -157,16 +157,19 @@ public class Utils {
 		}
 	}
 	
-	public static short checksum(byte[] buf) {
-		int length = buf.length;
-	    int i = 0;
+	public static short checksum(byte[] data) {
+		int length = data.length;
+	    int index = 0;
 	    short sum = 0;
 	    while (length > 0) {
-	        sum += (buf[i++]&0xff) << 8;
-	        if ((--length)==0) break;
-	        sum += (buf[i++]&0xff);
+	        sum += (data[index++]&0xFF) << 8;
+	        length--;
+	        if(length==0)
+	        	break;
+	        sum += (data[index++]&0xFF);
 	        --length;
 	    }
-	    return (short) ((~((sum & 0xFFFF)+(sum >> 16)))&0xFFFF);
+	    short checksum = (short) ((~((sum & 0xFFFF)+(sum >> 16))) & 0xFFFF);
+	    return checksum; 
 	}
 }
