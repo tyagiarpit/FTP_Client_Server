@@ -4,6 +4,7 @@ public class Segment {
 	private byte[] data;
 	private int length;
 	private boolean acknowledged;
+	private Timer timerThread;
 	
 	public byte[] getData() {
 		return data;
@@ -45,4 +46,13 @@ public class Segment {
 	public void setAcknowledged(boolean acknowledged) {
 		this.acknowledged = acknowledged;
 	}
+
+	public Timer getTimerThread() {
+		return timerThread;
+	}
+
+	public void setTimerThread(Timer timerThread) {
+		this.timerThread = timerThread;
+	}
+
 }

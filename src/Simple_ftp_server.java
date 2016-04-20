@@ -47,7 +47,7 @@ public class Simple_ftp_server {
 		
 		double p = Double.parseDouble(args[2]);
 		
-		
+		Utils.handleRTT();
 		
 		serverSocket = new DatagramSocket(null);
 		serverSocket.bind(new InetSocketAddress(InetAddress.getByName(InetAddress.getLocalHost().getHostAddress()),port));
@@ -59,7 +59,6 @@ public class Simple_ftp_server {
 		int expSeqNo = 0;
 		
 		while(true){
-			
 			byte[] buffer = new byte[204800]; 
 			DatagramPacket receivePacket =new DatagramPacket(buffer, buffer.length);
 			
@@ -71,7 +70,6 @@ public class Simple_ftp_server {
 			
 			UDPPacket packet = new UDPPacket(receivedData);
 			
-			/*You can do better*/
 			if(packet.getHeader().getType()==UDPHeader.HeaderType.FIN)
 				break;
 			
