@@ -1,13 +1,13 @@
 #!/bin/bash
-if [ "$1" = "" ]; then
-	echo "./Server_Multiple.sh <PORT_NUMBER> [SR]"
+if [ "$2" = "" ]; then
+	echo "./Server_Multiple.sh <PORT_NUMBER> <FILE> [SR]"
 	exit
 fi
 PORT=$1
-if [ "$2" = "SR" ]; then
+if [ "$3" = "SR" ]; then
 	SR="SR"
 fi
-FILE=_destination.pdf
+FILE=$2
 
 for r in {1..5}
 do
@@ -31,5 +31,6 @@ do
 	java -cp bin Simple_ftp_server $PORT P$r$i$FILE $p $SR
 	done;
 done;
-rm -f *destination*.pdf
+rm -f *$FILE
+
 
